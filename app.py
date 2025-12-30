@@ -26,18 +26,28 @@ from resources.dashboard_resource import (
 )
 
 app = Flask(__name__)
+CORS(
+    app,
+    origins=[
+        "http://localhost:3000",
+        "https://car-joy.vercel.app/"
+    ],
+    supports_credentials=True
+)
 
 # CONFIG
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["JWT_SECRET_KEY"] = "super-secret-key"
+app.config["JWT_TOKEN_LOCATION"] = ["headers"]
+app.config["JWT_HEADER_NAME"] = "Authorization"
+app.config["JWT_HEADER_TYPE"] = "Bearer"
 
 
 # INIT
 db.init_app(app)
 jwt = JWTManager(app)
 api = Api(app)
-CORS(app)
 
 # ROUTES
 api.add_resource(RegisterUser, "/api/register")
